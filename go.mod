@@ -1,3 +1,3 @@
-module github.com/orgs/llmuz/yggdrasill
+module github.com/llmuz/yggdrasill
 
 go 1.18
