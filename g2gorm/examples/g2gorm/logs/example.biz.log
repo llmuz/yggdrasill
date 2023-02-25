@@ -1,0 +1,1 @@
+2023-02-25 15:02:49.2519271	INFO	[35mC:/Users/xuxic/GolandProjects/yggdrasill/ugorm/db_entry.go:74 [0m[31m[error] [0mfailed to initialize database, got error dial tcp 127.0.0.1:5601: connectex: No connection could be made because the target machine actively refused it.
