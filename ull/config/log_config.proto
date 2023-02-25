@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package config;
+
+option go_package = "./config;config";
+
+// 日志初始化配置, proto3 optional 特性
+message LogConfig {
+
+  // @gotags: toml:"file_name"
+  string file_name = 1;  // 日志文件的名称, 默认值是 biz.log
+
+  // @gotags: toml:"level"
+  string level = 2;               // 日志等级, ["debug","info","warn","error"], 默认是 info
+
+  // @gotags: toml:"json_format"
+  optional bool json_format = 3;  // 是否开启json格式, 默认不开启
+
+  // @gotags: toml:"max_size"
+  optional uint32 max_size = 4;   // 文件容量的最大值，单位是 mb, 默认是 1024
+
+  // @gotags: toml:"max_backup"
+  optional uint32 max_backup = 5; // 最大文件的保留数量, 默认保留200个
+
+  // @gotags: toml:"max_age"
+  optional uint32 max_age = 6;    // 保存的最大天数, 默认保留7天
+
+  // @gotags: toml:"compress"
+  optional bool compress = 7;     // 是否压缩日志, 默认不压缩
+
+  // @gotags: toml:"debug_mode_output_console"
+  optional bool debug_mode_output_console = 8; // debug 模式下输出到控制台, 默认不输出
+}

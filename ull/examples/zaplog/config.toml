@@ -1,0 +1,16 @@
+# 日志级别
+level = "debug"
+# 文件名
+file_name = "ull/examples/zaplog/logs/biz.log"
+# 是否使用 json 模式
+json_format = true
+# 单个文件大小, 单位 MB
+max_size = 1024
+# 最多保留多少个文件
+max_backup = 30
+# 日志保留的最大天数
+max_age = 7
+# 是否压缩文件
+compress = false
+# debug 模式是否向控制台输出
+debug_mode_output_console = false
