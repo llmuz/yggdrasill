@@ -1,0 +1,26 @@
+[logger_config]
+file_name = "ugorm/examples/ugorm/logs/biz.log"
+level = "debug"
+json_format = false
+max_size = 128
+max_backup = 7
+max_age = 2
+compress = false
+debug_mode_output_console = true
+
+[db_config]
+driver = "mysql"
+dsn = "root:123456@tcp(127.0.0.1:5601)/crok?charset=utf8mb4&parseTime=True&loc=Local"
+
+# 连接池配置
+[db_config.conn_pool]
+max_open_conn = 2
+max_idle_conn = 2
+max_life_time = "1h"
+max_idle_time = "30m"
+
+# 日志配置
+[db_config.orm_log_config]
+slow_threshold = "500ms"
+log_level = "debug"
+colorful = true

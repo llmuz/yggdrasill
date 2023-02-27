@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package config;
+
+option go_package = "./config;config";
+
+message EngineConfig  {
+
+  // 使用驱动的名称, [mysql, postgres]
+  // @gotags: toml:"driver"
+  string driver = 1;
+  // 数据库链接的基本信息
+  // @gotags: toml:"dsn"
+  string dsn = 2;
+
+  //  gorm 提供的配置
+  // @gotags: toml:"skip_default_transaction"
+  optional  bool  skip_default_transaction = 3;
+  // @gotags: toml:"prepare_stmt"
+  optional bool  prepare_stmt = 4;
+  // @gotags: toml:"disable_automatic_ping"
+  optional bool disable_automatic_ping = 5;
+  // @gotags: toml:"create_batch_size"
+  optional  int32 create_batch_size = 6;
+
+  // 连接池配置
+  // @gotags: toml:"conn_pool"
+  ConnPool conn_pool = 7;
+
+  // 日志记录配置
+  // @gotags: toml:"orm_log_config"
+  OrmLogConfig orm_log_config = 8;
+}
+
+// gorm 日志配置
+message OrmLogConfig {
+  // 查询日志配置
+  // 慢查询日志的时长
+  // 默认 1 秒
+  // @gotags: toml:"slow_threshold"
+  string slow_threshold = 1;
+  // 默认值为 info
+  // @gotags: toml:"log_level"
+  string log_level = 2;
+  // @gotags: toml:"ignore_record_not_found_error"
+  bool  ignore_record_not_found_error = 3;
+  // @gotags: toml:"colorful"
+  bool  colorful = 4;
+}
+
+// 连接池配置
+message ConnPool {
+  // 数据库连接池配置
+  // max_open_conn 最大连接数量, 默认是0，表示不限制链接数量
+  // @gotags: toml:"max_open_conn"
+  optional int32 max_open_conn = 1;
+  // 如果 max_open_conn 大于 0 但小于新的 max_idle_conn，则新的 max_idle_conn 将减少以匹配 max_open_conn 限制。
+  // max_idle_conn 最大空闲链接链接数量， 小于等于 0 表示不保留任何空闲链接, 默认为 2 表示保留两个空闲链接
+  // @gotags: toml:"max_idle_conn"
+  optional int32 max_idle_conn = 2;
+  // 链接的最长存活时间, 如果小于等于 0，表示链接不会关闭
+  // @gotags: toml:"max_life_time"
+  optional string max_life_time = 3;
+  // 设置空闲链接的最长存活时间
+  // 超时的链接可能会在被复用之前延迟关闭
+  // 如果设置的值小于等于0, 那么空闲链接不会因为超时而关闭
+  // @gotags: toml:"max_idle_time"
+  optional string max_idle_time = 4;
+}
