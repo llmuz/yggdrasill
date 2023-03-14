@@ -6,8 +6,9 @@ require (
 	github.com/BurntSushi/toml v1.2.1
 	github.com/gin-gonic/gin v1.9.0
 	github.com/natefinch/lumberjack v2.0.0+incompatible
-	go.opentelemetry.io/otel v1.13.0
-	go.opentelemetry.io/otel/trace v1.13.0
+	go.opentelemetry.io/otel v1.14.0
+	go.opentelemetry.io/otel/sdk v1.14.0
+	go.opentelemetry.io/otel/trace v1.14.0
 	go.uber.org/zap v1.24.0
 	google.golang.org/protobuf v1.28.1
 	gorm.io/driver/mysql v1.4.7
@@ -18,6 +19,8 @@ require (
 	github.com/bytedance/sonic v1.8.0 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
+	github.com/go-logr/logr v1.2.3 // indirect
+	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.11.2 // indirect
