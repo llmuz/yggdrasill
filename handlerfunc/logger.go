@@ -1,7 +1,6 @@
 package handlerfunc
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -32,20 +31,18 @@ func LoggerHandlerFunc(logger ull.Helper, biz func(ctx *gin.Context) (fields []u
 		// Stop timer
 		param.TimeStamp = time.Now()
 		param.Latency = param.TimeStamp.Sub(start)
-
 		param.ClientIP = c.ClientIP()
 		param.Method = c.Request.Method
 		param.StatusCode = c.Writer.Status()
 		param.ErrorMessage = c.Errors.ByType(gin.ErrorTypePrivate).String()
-
 		param.BodySize = c.Writer.Size()
 
 		if raw != "" {
 			path = path + "?" + raw
 		}
-
 		param.Path = path
-		logger.WithContext(c.Request.Context()).Info(defaultLogFormatter(param), biz(c)...)
+
+		logger.WithContext(c.Request.Context()).Info("logger handler", append(defaultLogFormatter(param), biz(c)...)...)
 	}
 }
 
@@ -58,24 +55,16 @@ var DefaultLoggerTracer = func(c *gin.Context) (fields []ull.Field) {
 	return fields
 }
 
-var defaultLogFormatter = func(param gin.LogFormatterParams) string {
-	var statusColor, methodColor, resetColor string
-	if param.IsOutputColor() {
-		statusColor = param.StatusCodeColor()
-		methodColor = param.MethodColor()
-		resetColor = param.ResetColor()
-	}
+var defaultLogFormatter = func(param gin.LogFormatterParams) (fields []ull.Field) {
 
-	if param.Latency > time.Minute {
-		param.Latency = param.Latency.Truncate(time.Second)
-	}
-	return fmt.Sprintf("[GIN] %v |%s %3d %s| %13v | %15s |%s %-7s %s %#v\n%s",
-		param.TimeStamp.Format("2006:01:02 - 15:04:05.666666"),
-		statusColor, param.StatusCode, resetColor,
-		param.Latency,
-		param.ClientIP,
-		methodColor, param.Method, resetColor,
-		param.Path,
-		param.ErrorMessage,
-	)
+	fields = make([]ull.Field, 0, 8)
+	fields = append(fields, ull.Any("status_code", param.StatusCode))
+	fields = append(fields, ull.Any("latency_seconds", param.Latency.Seconds()))
+	fields = append(fields, ull.Any("client_ip", param.ClientIP))
+	fields = append(fields, ull.Any("method", param.Method))
+	fields = append(fields, ull.Any("path", param.Path))
+	fields = append(fields, ull.Any("body_size", param.BodySize))
+	fields = append(fields, ull.Any("error_message", param.ErrorMessage))
+	return fields
+
 }
