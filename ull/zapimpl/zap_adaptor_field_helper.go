@@ -45,7 +45,7 @@ func (c *zapLoggerHelper) WithContext(ctx context.Context) ull.FieldLogger {
 	return &zapFieldLogger{
 		ctx:    ctx,
 		helper: c,
-		entry:  newZapLogEntry(ctx),
+		entry:  NewZapLogEntry(ctx),
 	}
 }
 
@@ -69,8 +69,4 @@ func (c *zapLoggerHelper) initLogLevel() {
 			break
 		}
 	}
-}
-
-func newZapLogEntry(ctx context.Context) ull.Entry {
-	return &zapLoggerEntry{ctx: ctx, fields: make([]ull.Field, 0, 4)}
 }
