@@ -1,36 +1,34 @@
-package uzapimpl
+package ullimpl
 
 import (
 	"context"
 	"fmt"
 
-	"go.uber.org/zap"
 	"gorm.io/gorm/logger"
 
 	"github.com/llmuz/yggdrasill/ugorm"
+	"github.com/llmuz/yggdrasill/ull"
+	"github.com/llmuz/yggdrasill/ull/zapimpl"
 )
 
-func NewWriter(logger *zap.Logger, optHooks ...ugorm.Hook) (w Writer) {
+func NewWriter(log ull.Helper, optHooks ...ugorm.Hook) (w Writer) {
 	var hooks = make(ugorm.Hooks, 0)
 	for _, h := range optHooks {
 		for _, level := range h.Levels() {
 			hooks[level] = append(hooks[level], h)
 		}
 	}
-	return &writerImpl{logger: logger, hooks: hooks}
+	return &writerImpl{log: log, hooks: hooks}
 }
 
 type writerImpl struct {
-	logger *zap.Logger
-	hooks  ugorm.Hooks
+	log   ull.Helper
+	hooks ugorm.Hooks
 }
 
 func (c *writerImpl) Printf(ctx context.Context, level logger.LogLevel, format string, values ...interface{}) {
-	var e = newEntry(ctx)
+	var e = zapimpl.NewZapLogEntry(ctx)
 	c.hooks.Fire(level, e)
-	var f = make([]zap.Field, 0, len(e.GetFields()))
-	for _, v := range e.GetFields() {
-		f = append(f, zap.Any(v.Key, v.Interface))
-	}
-	c.logger.Info(fmt.Sprintf(format, values...), f...)
+
+	c.log.WithContext(ctx).Info(fmt.Sprintf(format, values...), e.GetFields()...)
 }

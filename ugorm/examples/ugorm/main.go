@@ -13,7 +13,7 @@ import (
 
 	"github.com/llmuz/yggdrasill/ugorm"
 	lc "github.com/llmuz/yggdrasill/ugorm/config"
-	uz "github.com/llmuz/yggdrasill/ugorm/uzapimpl"
+	uz "github.com/llmuz/yggdrasill/ugorm/ullimpl"
 	"github.com/llmuz/yggdrasill/ull"
 	zlc "github.com/llmuz/yggdrasill/ull/config"
 	"github.com/llmuz/yggdrasill/ull/zapimpl"
@@ -72,14 +72,15 @@ func main() {
 		panic(err)
 	}
 	defer zl.Sync()
-
+	var logHelper = zapimpl.NewHelper(zl)
 	if helper, err = uz.NewDBHelper(&conf.DBConfig,
-		uz.WithLoggerV2(zl, conf.DBConfig.GetOrmLogConfig(), &g2Hook{})); err != nil {
+		uz.WithLogger(uz.NewLogger(logHelper, conf.DBConfig.GetOrmLogConfig(), &g2Hook{}))); err != nil {
 		panic(err)
 	}
 
 	// 清空表格
 	ctx := context.TODO()
+	helper.WithContext(ctx).AutoMigrate(&UserInfo{})
 	helper.WithContext(context.TODO()).Exec("truncate  user_info")
 
 	// 向表格中插入数据

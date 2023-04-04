@@ -56,7 +56,7 @@ func main() {
 
 	fmt.Println("start ", n)
 	helper.WithContext(ctx).Info("hello", ull.Any("hello", complexData))
-	for i := 0; i < 1000_000_000; i++ {
+	for i := 0; i < 10; i++ {
 		helper.WithContext(ctx).Info("hello", ull.Any("hello", complexData), ull.Any("now", time.Now()))
 	}
 	fmt.Println("end ", time.Now().Sub(n))
