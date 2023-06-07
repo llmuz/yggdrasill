@@ -38,10 +38,7 @@ func main() {
 	if _, err := toml.DecodeFile(*pf, &cfg); err != nil {
 		panic(err)
 	}
-	//for i := 0; i < 100; i++ {
-	//	time.Sleep(time.Millisecond * 20)
-	//	complexData[hex.EncodeToString(md5.New().Sum([]byte(time.Now().String())))] = hex.EncodeToString(md5.New().Sum([]byte(time.Now().String())))
-	//}
+
 	logger, err := zapimpl.NewZapLogger(&cfg)
 	if err != nil {
 		panic(err)
@@ -49,15 +46,17 @@ func main() {
 	defer logger.Sync()
 	// 移除日志文件
 	//defer os.RemoveAll(filepath.Dir(cfg.GetFileName()))
-	logger.Error("error")
 	n := time.Now()
 	ctx := context.WithValue(context.TODO(), "trace_id", md5.New().Sum([]byte(time.Now().String())))
 	helper := zapimpl.NewHelper(logger, zapimpl.AddHook(&H{Key: "hello"}), zapimpl.AddHook(&H{Key: "900x"}), zapimpl.AddHook(&H{Key: "trace_id"}))
 
 	fmt.Println("start ", n)
-	helper.WithContext(ctx).Info("hello", ull.Any("hello", complexData))
-	for i := 0; i < 10; i++ {
-		helper.WithContext(ctx).Info("hello", ull.Any("hello", complexData), ull.Any("now", time.Now()))
+	helper.WithContext(ctx).Errorf("hello %s %s", "你", "好")
+	for i := 0; i < 100; i++ {
+		helper.WithContext(ctx).Debugf("hello %#v %#v", ull.Any("hello", complexData), ull.Any("now", time.Now()))
+		helper.WithContext(ctx).Infof("hello %#v %#v", ull.Any("hello", complexData), ull.Any("now", time.Now()))
+		helper.WithContext(ctx).Warnf("hello %#v %#v", ull.Any("hello", complexData), ull.Any("now", time.Now()))
+		helper.WithContext(ctx).Errorf("hello %#v %#v", ull.Any("hello", complexData), ull.Any("now", time.Now()))
 	}
 	fmt.Println("end ", time.Now().Sub(n))
 }

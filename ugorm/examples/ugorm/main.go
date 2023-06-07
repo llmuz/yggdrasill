@@ -48,7 +48,7 @@ func (c *g2Hook) Fire(e ull.Entry) (err error) {
 	if ctx.Value(ak) == nil {
 		return nil
 	}
-	return e.AppendField(ull.Any("trace", fmt.Sprintf("%v", ctx.Value(ak))))
+	return e.AppendField(ull.Field{Key: "trace", Interface: fmt.Sprintf("%v", ctx.Value(ak))})
 }
 
 func (c *g2Hook) Levels() (levels []logger.LogLevel) {
@@ -72,9 +72,9 @@ func main() {
 		panic(err)
 	}
 	defer zl.Sync()
-	var logHelper = zapimpl.NewHelper(zl)
+
 	if helper, err = uz.NewDBHelper(&conf.DBConfig,
-		uz.WithLogger(uz.NewLogger(logHelper, conf.DBConfig.GetOrmLogConfig(), &g2Hook{}))); err != nil {
+		uz.WithLogger(uz.NewLogger(zl, conf.DBConfig.GetOrmLogConfig(), &g2Hook{}))); err != nil {
 		panic(err)
 	}
 
