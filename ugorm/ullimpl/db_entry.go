@@ -7,13 +7,13 @@ import (
 	"os"
 	"time"
 
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 
 	"github.com/llmuz/yggdrasill/ugorm"
 	"github.com/llmuz/yggdrasill/ugorm/config"
-	"github.com/llmuz/yggdrasill/ull"
 )
 
 type ConfigOption func(c *gorm.Config)
@@ -30,7 +30,7 @@ func WithLogger(l logger.Interface) ConfigOption {
 	}
 }
 
-func NewLogger(log ull.Helper, conf *config.OrmLogConfig, optHooks ...ugorm.Hook) logger.Interface {
+func NewLogger(log *zap.Logger, conf *config.OrmLogConfig, optHooks ...ugorm.Hook) logger.Interface {
 	writer := NewWriter(log, optHooks...)
 	loggerConfig := buildLoggerConfig(conf)
 	loggerInterface := NewLoggerInterface(writer, loggerConfig)

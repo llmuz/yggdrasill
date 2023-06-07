@@ -1,6 +1,8 @@
 package handlerfunc
 
 import (
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -42,7 +44,11 @@ func LoggerHandlerFunc(logger ull.Helper, biz func(ctx *gin.Context) (fields []u
 		}
 		param.Path = path
 
-		logger.WithContext(c.Request.Context()).Info("logger handler", append(defaultLogFormatter(param), biz(c)...)...)
+		sb := strings.Builder{}
+		for _, v := range append(defaultLogFormatter(param), biz(c)...) {
+			sb.WriteString(fmt.Sprintf("%s:%+v ", v.Key, v.Interface))
+		}
+		logger.WithContext(c.Request.Context()).Infof(sb.String())
 	}
 }
 

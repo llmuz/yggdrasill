@@ -25,33 +25,33 @@ type zapFieldLogger struct {
 	ctx    context.Context
 }
 
-func (c *zapFieldLogger) Debug(msg string, fields ...ull.Field) {
+func (c *zapFieldLogger) Debugf(format string, a ...any) {
 	if c.helper.levelEnabled(ull.Level(zapcore.DebugLevel)) {
-		c.write(debugLevel, msg, fields...)
+		c.write(debugLevel, format, a...)
 	}
 }
 
-func (c *zapFieldLogger) Info(msg string, fields ...ull.Field) {
+func (c *zapFieldLogger) Infof(format string, a ...any) {
 	if c.helper.levelEnabled(ull.Level(infoLevel)) {
-		c.write(infoLevel, msg, fields...)
+		c.write(infoLevel, format, a...)
 	}
 }
 
-func (c *zapFieldLogger) Warn(msg string, fields ...ull.Field) {
+func (c *zapFieldLogger) Warnf(format string, a ...any) {
 	if c.helper.levelEnabled(ull.Level(warnLevel)) {
-		c.write(warnLevel, msg, fields...)
+		c.write(warnLevel, format, a...)
 	}
 }
 
-func (c *zapFieldLogger) Error(msg string, fields ...ull.Field) {
+func (c *zapFieldLogger) Errorf(format string, a ...any) {
 	if c.helper.levelEnabled(ull.Level(errorLevel)) {
-		c.write(errorLevel, msg, fields...)
+		c.write(errorLevel, format, a...)
 	}
 }
 
-func (c *zapFieldLogger) Fatal(msg string, fields ...ull.Field) {
+func (c *zapFieldLogger) Fatalf(format string, a ...any) {
 	if c.helper.levelEnabled(ull.Level(fatalLevel)) {
-		c.write(fatalLevel, msg, fields...)
+		c.write(fatalLevel, format, a...)
 	}
 }
 
@@ -68,12 +68,13 @@ func (c *zapFieldLogger) fireHooks() {
 }
 
 // 写日志
-func (c *zapFieldLogger) write(level zapcore.Level, msg string, fields ...ull.Field) {
+func (c *zapFieldLogger) write(level zapcore.Level, format string, a ...interface{}) {
 	c.fireHooks()
 	var f = make([]zapcore.Field, 0, 8)
-	for _, v := range append(fields, c.entry.GetFields()...) {
+	for _, v := range c.entry.GetFields() {
 		f = append(f, zap.Any(v.Key, v.Interface))
 	}
+	msg := fmt.Sprintf(format, a...)
 	if ce := c.helper.logger.Check(level, msg); ce != nil {
 		ce.Write(f...)
 	}
